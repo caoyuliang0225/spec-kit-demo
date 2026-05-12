@@ -2,6 +2,7 @@ package com.portal.auth.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users", indexes = {
@@ -30,8 +31,8 @@ public class User {
     @Column(nullable = false)
     private int tokenVersion;
 
-    @Column(nullable = false)
-    private String role = "CUSTOMER_USER";
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRole> userRoles;
 
     @Column(unique = true)
     private String wechatOpenid;
@@ -81,8 +82,8 @@ public class User {
     public int getTokenVersion() { return tokenVersion; }
     public void setTokenVersion(int tokenVersion) { this.tokenVersion = tokenVersion; }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public List<UserRole> getUserRoles() { return userRoles; }
+    public void setUserRoles(List<UserRole> userRoles) { this.userRoles = userRoles; }
 
     public String getWechatOpenid() { return wechatOpenid; }
     public void setWechatOpenid(String wechatOpenid) { this.wechatOpenid = wechatOpenid; }

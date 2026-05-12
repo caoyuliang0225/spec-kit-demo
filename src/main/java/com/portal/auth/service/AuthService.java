@@ -4,8 +4,12 @@ import com.portal.auth.dto.request.*;
 import com.portal.auth.dto.response.AuthResponse;
 import com.portal.auth.dto.response.VerifyOtpResponse;
 import com.portal.auth.exception.AuthException;
+import com.portal.auth.model.Role;
 import com.portal.auth.model.User;
+import com.portal.auth.model.UserRole;
+import com.portal.auth.repository.RoleRepository;
 import com.portal.auth.repository.UserRepository;
+import com.portal.auth.repository.UserRoleRepository;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +22,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final UserRoleRepository userRoleRepository;
     private final OtpService otpService;
     private final TokenService tokenService;
     private final DeviceService deviceService;
@@ -27,6 +33,8 @@ public class AuthService {
     private final String usernamePrefix;
 
     public AuthService(UserRepository userRepository,
+                       RoleRepository roleRepository,
+                       UserRoleRepository userRoleRepository,
                        OtpService otpService,
                        TokenService tokenService,
                        DeviceService deviceService,
@@ -35,6 +43,8 @@ public class AuthService {
                        PasswordEncoder passwordEncoder,
                        @Value("${app.username.prefix}") String usernamePrefix) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.userRoleRepository = userRoleRepository;
         this.otpService = otpService;
         this.tokenService = tokenService;
         this.deviceService = deviceService;
@@ -83,8 +93,14 @@ public class AuthService {
         user.setUsername(request.getUsername());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setTokenVersion(0);
-        user.setRole("CUSTOMER_USER");
         user = userRepository.save(user);
+
+        Role customerRole = roleRepository.findByName("CUSTOMER_USER")
+                .orElseThrow(() -> new RuntimeException("Default role CUSTOMER_USER not found"));
+        UserRole userRole = new UserRole();
+        userRole.setUser(user);
+        userRole.setRole(customerRole);
+        userRoleRepository.save(userRole);
 
         var accessToken = tokenService.generateAccessToken(user.getId(), user.getTokenVersion(), null);
         var refreshToken = tokenService.generateRefreshToken(user.getId());
@@ -207,7 +223,14 @@ public class AuthService {
             user.setUsername(username);
             user.setPasswordHash(null);
             user.setTokenVersion(0);
-            user.setRole("CUSTOMER_USER");
+            user = userRepository.save(user);
+
+            Role customerRole = roleRepository.findByName("CUSTOMER_USER")
+                    .orElseThrow(() -> new RuntimeException("Default role CUSTOMER_USER not found"));
+            UserRole userRole = new UserRole();
+            userRole.setUser(user);
+            userRole.setRole(customerRole);
+            userRoleRepository.save(userRole);
 
             if ("qr".equals(channel)) {
                 user.setWechatOpenidQr(openid);
