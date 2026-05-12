@@ -83,6 +83,7 @@ public class AuthService {
         user.setUsername(request.getUsername());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setTokenVersion(0);
+        user.setRole("CUSTOMER_USER");
         user = userRepository.save(user);
 
         var accessToken = tokenService.generateAccessToken(user.getId(), user.getTokenVersion(), null);
@@ -206,6 +207,7 @@ public class AuthService {
             user.setUsername(username);
             user.setPasswordHash(null);
             user.setTokenVersion(0);
+            user.setRole("CUSTOMER_USER");
 
             if ("qr".equals(channel)) {
                 user.setWechatOpenidQr(openid);
