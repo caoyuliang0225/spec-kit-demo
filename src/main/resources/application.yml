@@ -1,0 +1,67 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: portal-auth
+  datasource:
+    url: jdbc:postgresql://localhost:5432/portal_auth
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    hikari:
+      maximum-pool-size: 20
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:25}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+app:
+  jwt:
+    access-token-expiration: 900000
+    refresh-token-expiration: 604800000
+    secret: ${JWT_SECRET:defaultSecretKeyThatMustBeChangedInProduction1234567890}
+  otp:
+    length: 6
+    ttl-seconds: 300
+    resend-cooldown-seconds: 60
+    max-verify-attempts: 5
+    max-send-per-hour: 5
+  rate-limit:
+    qps-per-endpoint: 100
+    login-max-attempts: 10
+    login-window-seconds: 300
+  device:
+    active-window-minutes: 10
+    max-active-devices: 2
+  captcha:
+    provider: turnstile
+    secret-key: ${CAPTCHA_SECRET:}
+  username:
+    prefix: "user"
+  wechat:
+    open-platform:
+      app-id: ${WX_OPEN_APP_ID:}
+      app-secret: ${WX_OPEN_APP_SECRET:}
+      redirect-uri: ${WX_OPEN_REDIRECT_URI:}
+    official-account:
+      app-id: ${WX_MP_APP_ID:}
+      app-secret: ${WX_MP_APP_SECRET:}
+    app-sdk:
+      app-id: ${WX_APP_APP_ID:}
+      app-secret: ${WX_APP_APP_SECRET:}

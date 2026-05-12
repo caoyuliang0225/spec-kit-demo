@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  mail:
+    host: localhost
+    port: 25
+
+app:
+  jwt:
+    secret: testSecretKeyThatIsExactlyLongEnoughForHS256Algorithm
+    access-token-expiration: 900000
+    refresh-token-expiration: 604800000
+  otp:
+    length: 6
+    ttl-seconds: 300
+    resend-cooldown-seconds: 60
+    max-verify-attempts: 5
+    max-send-per-hour: 5
+  rate-limit:
+    qps-per-endpoint: 1000
+    login-max-attempts: 10
+    login-window-seconds: 300
+  device:
+    active-window-minutes: 10
+    max-active-devices: 2
+  captcha:
+    provider: turnstile
+    secret-key: 1x0000000000000000000000000000000AA
+  username:
+    prefix: "user"

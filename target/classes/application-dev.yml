@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+app:
+  jwt:
+    secret: devSecretKeyForTestingOnly12345678901234567890
+  captcha:
+    secret-key: 1x0000000000000000000000000000000AA
