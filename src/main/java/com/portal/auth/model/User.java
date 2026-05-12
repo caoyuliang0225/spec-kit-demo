@@ -30,6 +30,9 @@ public class User {
     @Column(nullable = false)
     private int tokenVersion;
 
+    @Column(nullable = false)
+    private String role = "CUSTOMER_USER";
+
     @Column(unique = true)
     private String wechatOpenid;
 
@@ -77,6 +80,9 @@ public class User {
 
     public int getTokenVersion() { return tokenVersion; }
     public void setTokenVersion(int tokenVersion) { this.tokenVersion = tokenVersion; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
     public String getWechatOpenid() { return wechatOpenid; }
     public void setWechatOpenid(String wechatOpenid) { this.wechatOpenid = wechatOpenid; }
